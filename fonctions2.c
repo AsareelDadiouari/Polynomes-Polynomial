@@ -203,7 +203,6 @@ void pop_position(Polynome* poly, int pos)
         for(i=1; i<pos-1 && ptr->next!=NULL; i++)
         {
             ptr=ptr->next;
-            printf("coef=%.0f\n", ptr->coef);
         }
 
         if(ptr->next->next!=NULL && pos!=poly->taille-1)

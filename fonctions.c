@@ -235,15 +235,17 @@ void multiplication_monome(Polynome* poly, float coef, float deg)
 Polynome somme(Polynome poly1,Polynome poly2)
 {
     Polynome polynome;
+    Polynome poly;
     initialisation(&polynome);
+    initialisation(&poly);
 
-    int cmppos=1;//Compteur pour la dans le polynome
     int cmpverif=0;
-    int taillepoly=poly1.taille+poly2.taille;
-    float somcoef, degcoef;
-    Monome* ptr, *qtr;
+    int cmp=1;
+    float somcoef=0, degcoef=0;
+    Monome* ptr, *qtr, *p, *q;
 
     polynome=concat(poly1, poly2);
+
     for(ptr=polynome.first; ptr->next!=NULL; ptr=ptr->next)
     {
         if(ptr->deg==ptr->next->deg)
@@ -261,114 +263,54 @@ Polynome somme(Polynome poly1,Polynome poly2)
 
         affichage_decroissant(polynome);
 
-        if(cmpverif==taillepoly-1)
-        {
-            do
-            {
-                if(ptr->deg==qtr->deg)
-                {
-                    somcoef=ptr->coef+qtr->coef;
-                    degcoef=ptr->deg;
-
-                    pop_position(&polynome, cmppos);
-                    pop_position(&polynome, cmppos);
-
-                    if(somcoef!=0)
-                    {
-                        insertion(&polynome, somcoef, degcoef);
-                        ptr=polynome.first;
-                        qtr=ptr->next;
-                        cmppos++;
-
-                        if(ptr->next==NULL)
-                            return polynome;
-                    }
-                }
-                else
-                {
-                    somcoef=0;
-                    degcoef=0;
-                    cmppos=1;
-                }
-
-                if(qtr->next!=NULL)
-                {
-                    ptr=ptr->next;
-                    qtr=ptr->next;
-                }
-            }
-            while(qtr!=NULL);
-        }
-        else
-        {
-            do
-            {
-                if(ptr->deg==qtr->deg)
-                {
-                    somcoef=ptr->coef+qtr->coef;
-                    degcoef=ptr->deg;
-
-                    pop_position(&polynome, cmppos);
-                    pop_position(&polynome, cmppos);
-
-                    if(somcoef!=0)
-                    {
-                        insertion(&polynome, somcoef, degcoef);
-                        affichage_decroissant(polynome);
-                        printf("cmp=%d\n", cmppos);
-                        if(polynome.taille==2)
-                        {
-                            ptr=polynome.first;
-                            qtr=ptr->next;
-
-                            if(ptr->deg!=qtr->deg)
-                                return polynome;
-                        }
-                    }
-                }
-                else
-                {
-                    somcoef=0;
-                    degcoef=0;
-                }
-
-                cmppos++;
-                ptr=ptr->next;
-                qtr=ptr->next;
-
-            }
-            while(qtr!=NULL);
-        }
-    }
-
-    if(retNbrRPT(polynome)==1)
-    {
-        ptr=polynome.first;
-        qtr=ptr->next;
-        cmppos=0;
-
         do
         {
+
             if(ptr->deg==qtr->deg)
             {
-                somcoef=ptr->coef+qtr->coef;
-                degcoef=ptr->deg;
-
-                pop_position(&polynome, cmppos);
-                pop_position(&polynome, cmppos);
-
-                if(somcoef!=0)
+                for(p=ptr, q=qtr; p->deg==q->deg; p=p->next, q=q->next)
                 {
-                    insertion(&polynome, somcoef, degcoef);
+                    degcoef=p->deg;
+
+                    if(p==ptr)
+                        somcoef+=p->coef+q->coef;
+                    else
+                        somcoef+=q->coef;
                 }
+
+                printf("somcoef=%.0f et decoef=%.0f\n", somcoef, degcoef);
+
+                suppression(&polynome, degcoef);
+
+                insertion(&poly, somcoef, degcoef);
+
+                affichage_decroissant(poly);
+
+                somcoef=0;
+                degcoef=0;
+
+                ptr=polynome.first;
+                qtr=ptr->next;
+
+                printf("somco=%.0f\ndegco=%.0f\n", somcoef, degcoef);
+                printf("ptr=%.0f\nqtr=%.0f\n", ptr->coef, qtr->coef);
+
             }
 
-            cmppos++;
-            ptr=ptr->next;
-            qtr=ptr->next;
+            if(ptr->deg!=qtr->deg)
+            {
+                ptr=ptr->next;
+                qtr=qtr->next;
+                printf("hi");
+            }
 
-        }
-        while(qtr!=NULL);
+            cmp++;
+
+        }while(qtr!=NULL);
+
+        polynome=concat(poly, polynome);
+
+
     }
     return polynome;
 }
