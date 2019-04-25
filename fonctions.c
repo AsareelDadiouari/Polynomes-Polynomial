@@ -301,8 +301,9 @@ Polynome somme(Polynome poly1,Polynome poly2)
             {
                 ptr=ptr->next;
                 qtr=qtr->next;
-                printf("hi");
             }
+
+            printf("hi");
 
             cmp++;
 
