@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "../header/header.h"
 
-int toCheckSub;
+enum TYPE_OPERATION toCheckSub; // varriable globale utilsée pour vérifier l'opérationn
 /*---------------------------------------------------*/
 
 void insertion(Polynome *poly, float coef, int deg)
@@ -11,15 +11,15 @@ void insertion(Polynome *poly, float coef, int deg)
         insertionAvide(poly, coef, deg);
     else if (poly->taille == 1)
     {
-        if (poly->first->deg > deg && nbrDeg(poly, deg) == 0)
+        if (poly->first->deg > deg && nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION)
             push_last(poly, coef, deg);
-        else if (poly->first->deg < deg && nbrDeg(poly, deg) == 0)
+        else if (poly->first->deg < deg && nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION)
             push_first(poly, coef, deg);
         else
         {
             Monome *ptr;
 
-            if (toCheckSub == 0)
+            if (toCheckSub == ADDITION)
             {
                 for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
                 {
@@ -27,7 +27,7 @@ void insertion(Polynome *poly, float coef, int deg)
                         ptr->coef += coef;
                 }
             }
-            else
+            else if (toCheckSub == SOUSTRACTION)
             {
                 for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
                 {
@@ -39,13 +39,13 @@ void insertion(Polynome *poly, float coef, int deg)
     }
     else
     {
-        if (nbrDeg(poly, deg) == 0)
+        if (nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION)
             push_position(poly, coef, deg);
         else
         {
             Monome *ptr;
 
-            if (toCheckSub == 0)
+            if (toCheckSub == ADDITION)
             {
                 for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
                 {
@@ -53,7 +53,7 @@ void insertion(Polynome *poly, float coef, int deg)
                         ptr->coef += coef;
                 }
             }
-            else
+            else if (toCheckSub == SOUSTRACTION)
             {
                 for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
                 {
@@ -117,12 +117,49 @@ void affichageDec(const Polynome *poly)
 
     if (poly->taille == 0)
     {
-        printf("Vide\n");
+        printf("Polynome Vide\n");
     }
     else
     {
+        int j = 0, k=0;
+
         for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
-            printf("[%p][%.0f][%d][%p]->", ptr->prec, ptr->coef, ptr->deg, ptr->next);
+        {
+            while (j <= nbrCarac(ptr->coef))
+            {
+                printf(" ");
+                j++;
+            }
+
+            printf("%d\t", ptr->deg);
+            
+            j=0;
+        }
+        printf("\n");
+
+        for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
+        {
+            if (ptr->deg != 0 && ptr->coef > 1)
+                printf("%.0fX\t", ptr->coef);
+            else if (ptr->deg != 0 && ptr->coef < 0)
+                printf("(%.0fX)\t", ptr->coef);
+            else if (ptr->deg == 0 && ptr->coef == -1)
+                printf("(%.0f)\t", ptr->coef);
+            else if (ptr->deg == 0 && ptr->coef == 1)
+                printf("%.0f\t", ptr->coef);
+            else if (ptr->coef == 1)
+                printf("X\t");
+            else if (ptr->coef != 0 && ptr->deg == 0)
+                printf("%.0f\t", ptr->coef);
+
+            if (ptr->next != NULL && ptr->next->deg != 0 && ptr->next->coef != 0)
+                printf("+");
+
+            if (ptr->next != NULL && ptr->next->deg == 0 && ptr->next->coef != 0)
+                printf("+");
+
+            printf("\t");
+        }
         printf("\n");
     }
 }
@@ -147,26 +184,30 @@ void destruction(Polynome *poly)
     }
 }
 /*---------------------------------------------------*/
-void multiplication_scalaire(Polynome *poly, int scal)
+Polynome *multiplication_scalaire(const Polynome *poly, int scal)
 {
-    Monome *temp;
+    const Monome *temp;
+    Polynome *polynome = initialisation();
 
     for (temp = poly->first; temp != NULL; temp = temp->next)
     {
-        temp->coef *= scal;
+        insertion(polynome, temp->coef * scal, temp->deg);
     }
+
+    return polynome;
 }
 
 /*---------------------------------------------------*/
-void multiplication_monome(Polynome *poly, float coef, int deg)
+Polynome *multiplication_monome(const Polynome *poly, float coef, int deg)
 {
-    Monome *temp;
+    const Monome *temp;
+    Polynome *polynome = initialisation();
 
     for (temp = poly->first; temp != NULL; temp = temp->next)
     {
-        temp->coef *= coef;
-        temp->deg += deg;
+        insertion(polynome, temp->coef * coef, temp->deg + deg);
     }
+    return polynome;
 }
 /*---------------------------------------------------*/
 Polynome *somme(const Polynome *poly1, const Polynome *poly2)
@@ -175,6 +216,8 @@ Polynome *somme(const Polynome *poly1, const Polynome *poly2)
     Polynome *polynome = initialisation();
 
     const Monome *ptr;
+
+    toCheckSub = ADDITION;
 
     for (ptr = poly1->first; ptr != NULL; ptr = ptr->next)
     {
@@ -194,7 +237,7 @@ Polynome *soustraction(const Polynome *poly1, const Polynome *poly2)
     Polynome *polynome = initialisation();
 
     Monome *ptr;
-    toCheckSub = 1;
+    toCheckSub = SOUSTRACTION;
 
     for (ptr = poly1->first; ptr != NULL; ptr = ptr->next)
     {
@@ -206,7 +249,75 @@ Polynome *soustraction(const Polynome *poly1, const Polynome *poly2)
         insertion(polynome, ptr->coef, ptr->deg);
     }
 
-    toCheckSub = 0;
+    return polynome;
+}
+/*---------------------------------------------------*/
+Polynome *produit(const Polynome *poly1, const Polynome *poly2)
+{
+    Polynome *polynome = initialisation();
+    const Monome *ptr, *qtr;
+    float prodCoef;
+    int prodDeg;
+
+    for (ptr = poly1->first; ptr != NULL; ptr = ptr->next)
+    {
+        for (qtr = poly2->first; qtr != NULL; qtr = qtr->next)
+        {
+            prodCoef = ptr->coef * qtr->coef;
+            prodDeg = ptr->deg + qtr->deg;
+            insertion(polynome, prodCoef, prodDeg);
+        }
+    }
+
+    return polynome;
+}
+/*---------------------------------------------------*/
+Polynome *derivee(const Polynome *poly)
+{
+    Polynome *polynome = initialisation();
+    const Monome *ptr;
+    float derCoef;
+    int derDeg;
+
+    for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
+    {
+        derCoef = ptr->coef * ptr->deg;
+        derDeg = ptr->deg - 1;
+        insertion(polynome, derCoef, derDeg);
+    }
+
+    return polynome;
+}
+/*---------------------------------------------------*/
+Polynome *primitive(const Polynome *poly)
+{
+    Polynome *polynome = initialisation();
+    const Monome *ptr;
+    float priCoef;
+    int priDeg;
+
+    for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
+    {
+        priCoef = ptr->coef * (1 / (ptr->deg + 1));
+        priDeg = ptr->deg + 1;
+        insertion(polynome, priCoef, priDeg);
+    }
+
+    return polynome;
+}
+/*---------------------------------------------------*/
+
+Polynome *image(const Polynome *poly, int entier)
+{
+    Polynome *polynome = initialisation();
+    const Monome *ptr;
+    float imgCoef;
+    int imgDeg;
+
+    for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
+    {
+
+    }
 
     return polynome;
 }
