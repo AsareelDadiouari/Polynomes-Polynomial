@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "math.h"
 #include "../header/header.h"
 
 enum TYPE_OPERATION toCheckSub; // varriable globale utilsée pour vérifier l'opérationn
@@ -110,7 +111,9 @@ void supprimer(Polynome *poly, float deg)
 }
 
 /*---------------------------------------------------*/
-
+/* NOTE : les coeffcients et les degree ne doivent pas deppasée 3 caractere 
+sinon il y aura un défaut d'affichage.
+*/
 void affichageDec(const Polynome *poly)
 {
     const Monome *ptr;
@@ -121,7 +124,7 @@ void affichageDec(const Polynome *poly)
     }
     else
     {
-        int j = 0, k=0;
+        int j = 0, k = 0, cmp;
 
         for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
         {
@@ -130,10 +133,28 @@ void affichageDec(const Polynome *poly)
                 printf(" ");
                 j++;
             }
+            j = 0;
 
-            printf("%d\t", ptr->deg);
-            
-            j=0;
+            if (ptr->deg != 1 && ptr->deg != 0 && ptr->coef != 0)
+            {
+                printf("%d\t", ptr->deg);
+            }
+            else if (ptr->deg == 0)
+                printf(" ");
+
+            for (cmp = 0; cmp < 100; cmp++)
+            {
+                if (nbrCarac(ptr->coef == cmp))
+                {
+                    while (k <= nbrCarac(ptr->coef) + cmp + 5)
+                    {
+                        printf(" ");
+                        k++;
+                    }
+                }
+                break;
+            }
+            k = 0;
         }
         printf("\n");
 
@@ -167,7 +188,34 @@ void affichageDec(const Polynome *poly)
 /*---------------------------------------------------*/
 void affichageCroi(const Polynome *poly) //En cours
 {
+    const Monome *ptr;
+    printf("\n");
+    for (ptr = poly->last; ptr != NULL; ptr = ptr->prec)
+    {
+        if (ptr->deg != 0 && ptr->coef > 1)
+            printf("%.0fX\t", ptr->coef);
+        else if (ptr->deg != 0 && ptr->coef < 0)
+            printf("(%.0fX)\t", ptr->coef);
+        else if (ptr->deg == 0 && ptr->coef == -1)
+            printf("(%.0f)\t", ptr->coef);
+        else if (ptr->deg == 0 && ptr->coef == 1)
+            printf("%.0f\t", ptr->coef);
+        else if (ptr->coef == 1)
+            printf("X\t");
+        else if (ptr->coef != 0 && ptr->deg == 0)
+            printf("%.0f\t", ptr->coef);
+
+        if (ptr->prec != NULL && ptr->prec->deg != 0 && ptr->prec->coef != 0)
+            printf("+");
+
+        if (ptr->prec != NULL && ptr->prec->deg == 0 && ptr->prec->coef != 0)
+            printf("+");
+
+        printf("\t");
+    }
+    printf("\n");
 }
+
 /*---------------------------------------------------*/
 void destruction(Polynome *poly)
 {
@@ -307,17 +355,20 @@ Polynome *primitive(const Polynome *poly)
 }
 /*---------------------------------------------------*/
 
-Polynome *image(const Polynome *poly, int entier)
+float image(const Polynome *poly, int entier)
 {
-    Polynome *polynome = initialisation();
+    float image;
     const Monome *ptr;
-    float imgCoef;
-    int imgDeg;
 
     for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
     {
-
+        image += ptr->coef * (pow(entier, ptr->deg));
     }
+    return image;
+}
 
-    return polynome;
+/*---------------------------------------------------*/
+float integrale(const Polynome *poly, int lim1, int lim2)
+{
+    
 }
