@@ -191,3 +191,45 @@ int nbrDeg(Polynome *poly, int deg)
     return i;
 }
 /*---------------------------------------------------*/
+int nbrCarac(int nbr)
+{
+    int i = 0;
+
+    do
+    {
+        nbr = nbr / 10;
+        i++;
+    } while (nbr != 0);
+
+    return i;
+}
+/*---------------------------------------------------*/
+void afficheAdr(const Polynome *poly)
+{
+    Monome *ptr;
+
+    for (ptr = poly->last; ptr != NULL; ptr = ptr->prec)
+    {
+        printf("[%p][%.0f][%d][%p]   ", ptr->next, ptr->coef, ptr->deg, ptr->prec);
+    }
+    printf("\n");
+}
+/*---------------------------------------------------*/
+void menu()
+{
+    printf("1-Creation du polynome :\n");
+    printf("2-Supprimer un Monome à partir de son degre :\n");
+    printf("3-Affichage Decroissant :\n");
+    printf("4-Affichage Croissant :\n");
+    printf("5-Multiplication par un scalaire :\n");
+    printf("6-Multiplication par un Monome :\n");
+    printf("7-Somme de deux polynome :\n");
+    printf("8-Soustraction de deux polynome :\n");
+    printf("9-Produit de deux polynome :\n");
+    printf("10-Derivee d'un polynome :\n");
+    printf("11-Primitive d'un polynome :\n");
+    printf("12-Image d'un polynome :\n");
+    printf("13 -Integrale d'un polynome :\n");
+    printf("14-Destruction d'un polynome :\n");
+    printf("Quitter le programme :\n");
+}
