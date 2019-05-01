@@ -217,19 +217,48 @@ void afficheAdr(const Polynome *poly)
 /*---------------------------------------------------*/
 void menu()
 {
-    printf("1-Creation du polynome :\n");
-    printf("2-Supprimer un Monome à partir de son degre :\n");
-    printf("3-Affichage Decroissant :\n");
-    printf("4-Affichage Croissant :\n");
-    printf("5-Multiplication par un scalaire :\n");
-    printf("6-Multiplication par un Monome :\n");
-    printf("7-Somme de deux polynome :\n");
-    printf("8-Soustraction de deux polynome :\n");
-    printf("9-Produit de deux polynome :\n");
-    printf("10-Derivee d'un polynome :\n");
-    printf("11-Primitive d'un polynome :\n");
-    printf("12-Image d'un polynome :\n");
-    printf("13 -Integrale d'un polynome :\n");
-    printf("14-Destruction d'un polynome :\n");
-    printf("Quitter le programme :\n");
+    printf("*************************************************************************************\n");
+    printf("*                                                                                   *\n");
+    printf("*        ____    ____                                ____                   ____    *\n");
+    printf("*       |    |  |    |   |      |    |   |/   |     |    |   |/      /|    |        *\n");
+    printf("*       |____|  |    |   |      |____|   | /  |     |    |   | /    / |    |____    *\n");
+    printf("*       |       |    |   |           |   |  / |     |    |   |  /  /  |    |        *\n");
+    printf("*       |       |____|   |____       |   |   /|     |____|   |   //   |    |____    *\n");
+    printf("*                                                                                   *\n");
+    printf("*************************************************************************************\n\n");
+
+    printf("|--------------------------------------------------------------------------------------|\n");
+    printf("| @Blingbike97                                        https://github.com/BrigadeROG1776|\n");
+    printf("|--------------------------------------------------------------------------------------|\n");
+}
+/*---------------------------------------------------*/
+void menu2()
+{
+    printf("1-Ajouter un autre Polynome\n");
+    printf("2-Supprimer un monome\n");
+    printf("3-Derivee d'un polynome\n");
+    printf("4-Primitive d'un Polynome\n");
+    printf("5-Image d'un polynome\n");
+    printf("6-Integrale d'un polynome\n");
+}
+/*---------------------------------------------------*/
+void menu3()
+{
+    printf("1-Ajouter un autre Polynome                   7-Somme de deux polynomes\n");
+    printf("2-Supprimer un monome                         8-Soustraction de deux polynomes\n");
+    printf("3-Derivee d'un polynome                       9-Produit de deux polynomes\n");
+    printf("4-Primitive d'un Polynome                     10-Multiplication scalaire\n");
+    printf("5-Image d'un polynome                         11-Multiplication Monome\n");
+    printf("6-Integrale d'un polynome\n");
+}
+/*---------------------------------------------------*/
+void affichMat(Polynome **poly, int taille)
+{
+    int i;
+
+    for (i = 0; i < taille + 1; i++)
+    {
+        affichageDec(poly[i]);
+        printf("***********************************************************************************\n");
+    }
 }

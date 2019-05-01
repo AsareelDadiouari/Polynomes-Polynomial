@@ -12,9 +12,9 @@ void insertion(Polynome *poly, float coef, int deg)
         insertionAvide(poly, coef, deg);
     else if (poly->taille == 1)
     {
-        if (poly->first->deg > deg && nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION)
+        if (poly->first->deg > deg && nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION && (coef != 0 || deg != 0))
             push_last(poly, coef, deg);
-        else if (poly->first->deg < deg && nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION)
+        else if (poly->first->deg < deg && nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION && (coef != 0 || deg != 0))
             push_first(poly, coef, deg);
         else
         {
@@ -40,7 +40,7 @@ void insertion(Polynome *poly, float coef, int deg)
     }
     else
     {
-        if (nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION)
+        if (nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION && (coef != 0 || deg != 0))
             push_position(poly, coef, deg);
         else
         {
@@ -118,12 +118,13 @@ void affichageDec(const Polynome *poly)
 {
     const Monome *ptr;
 
-    if (poly->taille == 0)
+    if (poly->taille == 0 || poly->first == NULL || poly->last == 0)
     {
         printf("Polynome Vide\n");
     }
     else
     {
+        printf("taille : %d\n", poly->taille);
         int j = 0, k = 0, cmp;
 
         for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
@@ -172,6 +173,8 @@ void affichageDec(const Polynome *poly)
                 printf("X\t");
             else if (ptr->coef != 0 && ptr->deg == 0)
                 printf("%.0f\t", ptr->coef);
+            else if (ptr->coef >= 0.0001)
+                printf("%.02fX\t", ptr->coef);
 
             if (ptr->next != NULL && ptr->next->deg != 0 && ptr->next->coef != 0)
                 printf("+");
@@ -330,7 +333,8 @@ Polynome *derivee(const Polynome *poly)
     for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
     {
         derCoef = ptr->coef * ptr->deg;
-        derDeg = ptr->deg - 1;
+        if (ptr->deg != 0)
+            derDeg = ptr->deg - 1;
         insertion(polynome, derCoef, derDeg);
     }
 
@@ -346,7 +350,7 @@ Polynome *primitive(const Polynome *poly)
 
     for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
     {
-        priCoef = ptr->coef * (1 / (ptr->deg + 1));
+        priCoef = ptr->coef * (1 / (float)(ptr->deg + 1));
         priDeg = ptr->deg + 1;
         insertion(polynome, priCoef, priDeg);
     }
@@ -362,7 +366,7 @@ float image(const Polynome *poly, int entier)
 
     for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
     {
-        image += ptr->coef * (pow(entier, ptr->deg));
+        image += ptr->coef * (pow(entier, (float)ptr->deg));
     }
     return image;
 }
@@ -370,5 +374,8 @@ float image(const Polynome *poly, int entier)
 /*---------------------------------------------------*/
 float integrale(const Polynome *poly, int lim1, int lim2)
 {
-    
+    float valeur;
+    const Monome *ptr;
+
+    return valeur = image(primitive(poly), lim2) - image(primitive(poly), lim1);
 }
