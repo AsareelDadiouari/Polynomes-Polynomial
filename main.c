@@ -6,68 +6,220 @@
 int main()
 {
     float coef;
-    int deg, choix;
+    int deg;
+    int choix, choixPoly, entierImg;
+    int i = 0; // indice de la matrice
+    int t = 0; // taille de la matrice
+    Polynome **matPoly;
+    matPoly = (Polynome **)malloc(sizeof(Polynome *));
+
+    matPoly[i] = initialisation();
 
     do
     {
         menu();
-        printf("choix : ");
+        printf("Entrer coef=0 et deg =0 pour arreter\n");
+        printf("----------------------------------------------\n");
+
+        affichMat(matPoly, i);
+
+        printf("Creation d' un polynome :\n");
+        printf("Enter un coefficient :");
+        scanf("%f", &coef);
+
+        printf("Enter un degree :");
+        scanf("%d", &deg);
+
+        insertion(matPoly[i], coef, deg);
+        system("cls");
+
+    } while (coef != 0 || deg != 0);
+
+    do
+    {
+        menu();
+
+        affichMat(matPoly, i);
+        if(i==0)
+            menu2();
+        else
+            menu3();
+        printf("choix :");
         scanf("%d", &choix);
         fflush(stdin);
 
         switch (choix)
         {
+        case 0:
+            printf("Fin du programme\n");
+            break;
+
         case 1:
-            /* code */
+            i++;
+            matPoly[i] = initialisation();
+            if (i == 0)
+                menu2();
+            else
+                menu3();
+            system("cls");
+
+            printf("Creation d' un polynome :\n");
+            do
+            {
+                menu();
+                affichMat(matPoly, i);
+                printf("Enter un coefficient :");
+                scanf("%f", &coef);
+
+                printf("Enter un degree :");
+                scanf("%d", &deg);
+
+                insertion(matPoly[i], coef, deg);
+                system("cls");
+
+            } while (coef != 0 || deg != 0);
+
             break;
         case 2:
-            /* code */
+            if (i == 0 && matPoly[i]->taille != 0)
+            {
+                system("cls");
+                menu();
+                affichMat(matPoly, i);
+                printf("Entrer le degree du monome a supprimer :");
+                scanf("%d", &deg);
+                supprimer(matPoly[i], deg);
+                system("cls");
+            }
+            else
+            {
+                system("cls");
+                menu();
+
+                affichMat(matPoly, i);
+                printf("Entrer le numero du polynome :");
+                scanf("%d", &choixPoly);
+                if (choixPoly <= i + 1)
+                {
+                    printf("Entrer le degree du monome a supprimer :");
+                    scanf("%d", &deg);
+                    supprimer(matPoly[choixPoly - 1], deg);
+                }
+
+                system("cls");
+            }
+
             break;
         case 3:
-            /* code */
+            if (i == 0)
+            {
+                printf("Derrivee Polynome =\n");
+                affichageDec(derivee(matPoly[i]));
+                system("pause");
+                system("cls");
+            }
+            else
+            {
+                printf("Entrer le numero du polynome :");
+                scanf("%d", &choixPoly);
+                if (choixPoly <= i + 1)
+                {
+                    printf("Derrivee Polynome %d =\n", choixPoly);
+                    affichageDec(derivee(matPoly[choixPoly - 1]));
+                    system("pause");
+                }
+                system("cls");
+            }
+
             break;
         case 4:
-            /* code */
+            if (i == 0)
+            {
+                printf("Primitive Polynome =\n");
+                affichageDec(primitive(matPoly[i]));
+                system("pause");
+                system("cls");
+            }
+            else
+            {
+                printf("Entrer le numero du polynome :");
+                scanf("%d", &choixPoly);
+                if (choixPoly <= i + 1)
+                {
+                    printf("Primitive Polynome %d =\n", choixPoly);
+                    affichageDec(primitive(matPoly[choixPoly - 1]));
+                    system("pause");
+                }
+                system("cls");
+            }
+
             break;
+
         case 5:
-            /* code */
+            if (i == 0)
+            {
+                printf("Entrer l'entier : =");
+                scanf("%d", &entierImg);
+
+                printf("L'image de %d par ce pomynome est : %f", image(matPoly[i], entierImg));
+                system("pause");
+                system("cls");
+            }
+            else
+            {
+                printf("Entrer le numero du polynome :");
+                scanf("%d", &choixPoly);
+                if (choixPoly <= i + 1)
+                {
+                    printf("Entrer l'entier : =");
+                    scanf("%d", &entierImg);
+
+                    printf("L'image de %d par ce pomynome est : %f", image(matPoly[choixPoly - 1], entierImg));
+                    system("pause");
+                    system("cls");
+                }
+                system("cls");
+            }
+
             break;
+
         case 6:
-            /* code */
-            break;
-        case 7:
-            /* code */
-            break;
-        case 8:
-            /* code */
-            break;
-        case 9:
-            /* code */
-            break;
-        case 10:
-            /* code */
-            break;
-        case 11:
-            /* code */
-            break;
-        case 12:
-            /* code */
-            break;
-        case 13:
-            /* code */
-            break;
-        case 14:
-            /* code */
-            break;
-        case 15:
-            printf("FIN DU PROGRAMME\n");
+            if (i == 0)
+            {
+
+                printf("L'intégrale est : %f", integrale(matPoly[i], -2, 2));
+                system("pause");
+                system("cls");
+            }
+            else
+            {
+                printf("Entrer le numero du polynome :");
+                scanf("%d", &choixPoly);
+                if (choixPoly <= i + 1)
+                {
+                    printf("L'integrale est : %f", integrale(matPoly[i], -2, 2));
+                    system("pause");
+                    system("cls");
+                }
+                system("cls");
+            }
+
             break;
 
         default:
-            printf("touche inconnue !\n");
+            printf("Touche inconnue... Recommencez\n");
             break;
         }
-    } while (choix != 15);
+    } while (choix != 0);
+
+    while (t <= i)
+    {
+        destruction(matPoly[t]);
+        printf("i=%d, t=%d\n", i, t);
+        t++;
+    }
+    
+    free(*matPoly);
 
     system("pause");
     return 0;
