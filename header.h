@@ -37,8 +37,12 @@ void sommer_monome(Polynome *poly, float coef, int deg);  // Terminée
 int nbrDeg(Polynome *poly, int deg);                      // Terminée
 int nbrCarac(int nbr);                                    // Terminée
 void afficheAdr(const Polynome *poly);                    // Terminée
+void menu();
+void menu2();
+void menu3();
+void affichMat(Polynome **poly, int taille);
 
-//Fontions proncipales
+//Fontions principales
 void insertion(Polynome *poly, float coef, int deg);                        // Terminée
 void supprimer(Polynome *poly, float deg);                                  // Terminée
 void affichageDec(const Polynome *poly);                                    // Terminée Note: Marche modérement
@@ -52,4 +56,4 @@ Polynome *produit(const Polynome *poly1, const Polynome *poly2);            // T
 Polynome *derivee(const Polynome *poly);                                    // Terminée
 Polynome *primitive(const Polynome *poly);                                  // Terminée
 float image(const Polynome *poly, int entier);                              // Terminée
-float integrale(const Polynome *poly, int lim1, int lim2);                  // En cours
+float integrale(const Polynome *poly, int lim1, int lim2);                  // Terminée
