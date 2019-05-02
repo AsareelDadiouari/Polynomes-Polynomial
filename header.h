@@ -37,10 +37,13 @@ void sommer_monome(Polynome *poly, float coef, int deg);  // Terminée
 int nbrDeg(Polynome *poly, int deg);                      // Terminée
 int nbrCarac(int nbr);                                    // Terminée
 void afficheAdr(const Polynome *poly);                    // Terminée
+
 void menu();
 void menu2();
 void menu3();
+void affichePrim(Polynome *poly);
 void affichMat(Polynome **poly, int taille);
+int degExiste(Polynome *poly, int deg);
 
 //Fontions principales
 void insertion(Polynome *poly, float coef, int deg);                        // Terminée

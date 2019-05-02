@@ -252,13 +252,34 @@ void menu3()
     printf("6-Integrale d'un polynome\n");
 }
 /*---------------------------------------------------*/
+void affichePrim(Polynome *poly)
+{
+}
+/*---------------------------------------------------*/
 void affichMat(Polynome **poly, int taille)
 {
     int i;
 
     for (i = 0; i < taille + 1; i++)
     {
-        affichageDec(poly[i]);
-        printf("***********************************************************************************\n");
+        if (poly[i]->taille != 0)
+        {
+            affichageDec(poly[i]);
+            printf("***********************************************************************************\n");
+        }
     }
 }
+/*---------------------------------------------------*/
+int degExiste(Polynome *poly, int deg)
+{
+    Monome *ptr;
+
+    for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
+    {
+        if (ptr->deg == deg)
+            return 1;
+    }
+
+    return 0;
+}
+/*---------------------------------------------------*/

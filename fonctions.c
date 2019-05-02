@@ -130,7 +130,6 @@ void affichageDec(const Polynome *poly)
     }
     else
     {
-        printf("taille : %d\n", poly->taille);
         int j = 0, k = 0, cmp;
 
         for (ptr = poly->first; ptr != NULL; ptr = ptr->next)

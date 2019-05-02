@@ -40,7 +40,7 @@ int main()
         menu();
 
         affichMat(matPoly, i);
-        if(i==0)
+        if (i == 0 || i == -1)
             menu2();
         else
             menu3();
@@ -57,7 +57,8 @@ int main()
         case 1:
             i++;
             matPoly[i] = initialisation();
-            if (i == 0)
+
+            if (i == 0 && i == -1)
                 menu2();
             else
                 menu3();
@@ -68,6 +69,7 @@ int main()
             {
                 menu();
                 affichMat(matPoly, i);
+
                 printf("Enter un coefficient :");
                 scanf("%f", &coef);
 
@@ -88,7 +90,17 @@ int main()
                 affichMat(matPoly, i);
                 printf("Entrer le degree du monome a supprimer :");
                 scanf("%d", &deg);
-                supprimer(matPoly[i], deg);
+
+                /*----Gestion de la mémoire apres suppression------*/
+                if (degExiste(matPoly[i], deg) == 1 && matPoly[i]->taille == 1)
+                {
+                    supprimer(matPoly[i], deg);
+                    destruction(matPoly[i]);
+                    i = -1;
+                }
+                else
+                    supprimer(matPoly[i], deg);
+
                 system("cls");
             }
             else
@@ -99,11 +111,20 @@ int main()
                 affichMat(matPoly, i);
                 printf("Entrer le numero du polynome :");
                 scanf("%d", &choixPoly);
-                if (choixPoly <= i + 1)
+
+                if (choixPoly <= i + 1 && choixPoly != 0)
                 {
                     printf("Entrer le degree du monome a supprimer :");
                     scanf("%d", &deg);
-                    supprimer(matPoly[choixPoly - 1], deg);
+
+                    if (degExiste(matPoly[choixPoly - 1], deg) == 1 && matPoly[choixPoly - 1]->taille == 1)
+                    {
+                        supprimer(matPoly[choixPoly - 1], deg);
+                        matPoly[choixPoly - 1] = matPoly[choixPoly];
+                        i--;
+                    }
+                    else
+                        supprimer(matPoly[choixPoly - 1], deg);
                 }
 
                 system("cls");
@@ -161,7 +182,7 @@ int main()
                 printf("Entrer l'entier : =");
                 scanf("%d", &entierImg);
 
-                printf("L'image de %d par ce pomynome est : %f", image(matPoly[i], entierImg));
+                printf("L'image de %d par ce pomynome est : %.2f", entierImg, image(matPoly[i], entierImg));
                 system("pause");
                 system("cls");
             }
@@ -174,7 +195,7 @@ int main()
                     printf("Entrer l'entier : =");
                     scanf("%d", &entierImg);
 
-                    printf("L'image de %d par ce pomynome est : %f", image(matPoly[choixPoly - 1], entierImg));
+                    printf("L'image de %d par ce pomynome est : %.2f", entierImg, image(matPoly[choixPoly - 1], entierImg));
                     system("pause");
                     system("cls");
                 }
@@ -208,17 +229,18 @@ int main()
 
         default:
             printf("Touche inconnue... Recommencez\n");
+            system("pause");
+            system("cls");
             break;
         }
     } while (choix != 0);
 
-    while (t <= i)
+    while (i >= 0)
     {
-        destruction(matPoly[t]);
-        printf("i=%d, t=%d\n", i, t);
-        t++;
+        destruction(matPoly[i]);
+        i--;
     }
-    
+
     free(*matPoly);
 
     system("pause");
