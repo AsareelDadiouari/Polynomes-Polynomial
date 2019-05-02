@@ -12,9 +12,9 @@ void insertion(Polynome *poly, float coef, int deg)
         insertionAvide(poly, coef, deg);
     else if (poly->taille == 1)
     {
-        if (poly->first->deg > deg && nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION && (coef != 0 || deg != 0))
+        if (poly->first->deg > deg && nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION && (coef != 0 && deg != 0) || (coef != 0 && deg == 0))
             push_last(poly, coef, deg);
-        else if (poly->first->deg < deg && nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION && (coef != 0 || deg != 0))
+        else if (poly->first->deg < deg && nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION && (coef != 0 && deg != 0) || (coef != 0 && deg == 0))
             push_first(poly, coef, deg);
         else
         {
@@ -40,7 +40,7 @@ void insertion(Polynome *poly, float coef, int deg)
     }
     else
     {
-        if (nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION && (coef != 0 || deg != 0))
+        if (nbrDeg(poly, deg) == 0 && toCheckSub == ADDITION && (coef != 0 && deg != 0) || (coef != 0 && deg == 0))
             push_position(poly, coef, deg);
         else
         {
@@ -59,7 +59,13 @@ void insertion(Polynome *poly, float coef, int deg)
                 for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
                 {
                     if (ptr->deg == deg)
+                    {
                         ptr->coef -= coef;
+                        if (ptr->coef == 0)
+                        {
+                            poly->taille--;
+                        }
+                    }
                 }
             }
         }
@@ -288,7 +294,6 @@ Polynome *soustraction(const Polynome *poly1, const Polynome *poly2)
     Polynome *polynome = initialisation();
 
     Monome *ptr;
-    toCheckSub = SOUSTRACTION;
 
     for (ptr = poly1->first; ptr != NULL; ptr = ptr->next)
     {
@@ -297,7 +302,16 @@ Polynome *soustraction(const Polynome *poly1, const Polynome *poly2)
 
     for (ptr = poly2->first; ptr != NULL; ptr = ptr->next)
     {
-        insertion(polynome, ptr->coef, ptr->deg);
+        if (nbrDeg(polynome, ptr->deg) == 0)
+        {
+            toCheckSub = ADDITION;
+            insertion(polynome, ptr->coef, ptr->deg);
+        }
+        else
+        {
+            toCheckSub = SOUSTRACTION;
+            insertion(polynome, ptr->coef, ptr->deg);
+        }
     }
 
     return polynome;
@@ -361,14 +375,14 @@ Polynome *primitive(const Polynome *poly)
 
 float image(const Polynome *poly, int entier)
 {
-    float image;
+    float img;
     const Monome *ptr;
 
     for (ptr = poly->first; ptr != NULL; ptr = ptr->next)
     {
-        image += ptr->coef * (pow(entier, (float)ptr->deg));
+        img += ptr->coef * (pow(entier, (float)ptr->deg));
     }
-    return image;
+    return img;
 }
 
 /*---------------------------------------------------*/
