@@ -8,6 +8,7 @@ int main()
     float coef;
     int deg;
     int choix, choixPoly, entierImg;
+    int lim1, lim2;
     int i = 0; // indice de la matrice
     int t = 0; // taille de la matrice
     Polynome **matPoly;
@@ -182,7 +183,7 @@ int main()
                 printf("Entrer l'entier : =");
                 scanf("%d", &entierImg);
 
-                printf("L'image de %d par ce pomynome est : %.2f", entierImg, image(matPoly[i], entierImg));
+                printf("L'image de %d par ce pomynome est : %.2f\n", entierImg, image(matPoly[i], entierImg));
                 system("pause");
                 system("cls");
             }
@@ -195,7 +196,7 @@ int main()
                     printf("Entrer l'entier : =");
                     scanf("%d", &entierImg);
 
-                    printf("L'image de %d par ce pomynome est : %.2f", entierImg, image(matPoly[choixPoly - 1], entierImg));
+                    printf("L'image de %d par ce pomynome est : %.2f\n", entierImg, image(matPoly[choixPoly - 1], entierImg));
                     system("pause");
                     system("cls");
                 }
@@ -207,8 +208,11 @@ int main()
         case 6:
             if (i == 0)
             {
-
-                printf("L'intégrale est : %f", integrale(matPoly[i], -2, 2));
+                printf("Borne 1 :");
+                scanf("%d", &lim1);
+                printf("\nBorne 2:");
+                scanf("%d", &lim2);
+                printf("L'integrale est : %f\n", integrale(matPoly[i], lim1, lim2));
                 system("pause");
                 system("cls");
             }
@@ -216,9 +220,13 @@ int main()
             {
                 printf("Entrer le numero du polynome :");
                 scanf("%d", &choixPoly);
+                printf("Borne 1 :");
+                scanf("%d", &lim1);
+                printf("\nBorne 2:");
+                scanf("%d", &lim2);
                 if (choixPoly <= i + 1)
                 {
-                    printf("L'integrale est : %f", integrale(matPoly[i], -2, 2));
+                    printf("L'integrale est : %f\n", integrale(matPoly[i], -2, 2));
                     system("pause");
                     system("cls");
                 }
